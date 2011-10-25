@@ -6,22 +6,35 @@ require File.dirname(__FILE__) + "/config/env"
 require File.dirname(__FILE__) + "/config/resque"
 require File.dirname(__FILE__) + "/jobs/push"          
 require File.dirname(__FILE__) + "/jobs/bucket_recounter"          
-require File.dirname(__FILE__) + "/config/mongo_config"
+require File.dirname(__FILE__) + "/config/mongo_config" 
+
+# for POST messages.json
+require File.dirname(__FILE__) + "/jobs/mongo_persist_tweet"
+require File.dirname(__FILE__) + "/jobs/push_tweet"
                           
 module Collectweet
   class App < Sinatra::Base
     set :static, true
     set :public, 'public'
     
-    use Rack::Auth::Basic, "Restricted Area" do |username, password|
-      [username, password] == [ENV["WEB_USERNAME"], ENV["WEB_PASSWORD"]]
-    end
+    # use Rack::Auth::Basic, "Restricted Area" do |username, password|
+    #   [username, password] == [ENV["WEB_USERNAME"], ENV["WEB_PASSWORD"]]
+    # end   
 
-    get "/" do
+    get "/" do  
+      protected!
       erb :index
-    end 
+    end
+     
+    post "/messages.json" do
+      m = JSON.parse(request.body.read)["message"]
+      persist_message m
+      broadcast_message m
+      success
+    end
     
     post "/stars.json" do   
+      protected!
       twid = JSON.parse(request.body.read)["tweet_id"] 
       add_star(twid)
       broadcast_star(twid)
@@ -29,6 +42,7 @@ module Collectweet
     end
     
     post "/buckets.json" do  
+      protected!
       case params["action"]
       when "add" 
         broadcast_bucket(add_bucket) unless real_words.empty?     
@@ -49,6 +63,18 @@ module Collectweet
       
       def all_buckets
         MONGOLAB_DB["collectweet.tweet_buckets"].find()
+      end 
+      
+      def protected!
+        unless authorized?
+          response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
+          throw(:halt, [401, "Not authorized\n"])
+        end
+      end
+
+      def authorized?
+        @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+        @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [ENV["WEB_USERNAME"], ENV["WEB_PASSWORD"]]
       end
       
     end
@@ -85,6 +111,14 @@ module Collectweet
     def remove_bucket
       # remove bucket 
       # id = params["id"]
+    end            
+    
+    def persist_message(message) 
+      Resque.enqueue(MongoPersistTweet, message)
+    end
+    
+    def broadcast_message(message)
+      Resque.enqueue(PushTweet, "tweets", "tweet", message)
     end
     
     def success(response = ["ok"])
