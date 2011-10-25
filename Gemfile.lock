@@ -67,6 +67,8 @@ GEM
     mime-types (1.16)
     mongo (1.4.0)
       bson (= 1.4.0)
+    nestful (0.0.7)
+      activesupport (>= 3.0.0.beta)
     newrelic_rpm (2.14.1)
     nokogiri (1.5.0)
     pace (0.0.6)
@@ -146,6 +148,7 @@ DEPENDENCIES
   guard-rspec
   heroku
   mongo
+  nestful
   newrelic_rpm
   pace
   pg

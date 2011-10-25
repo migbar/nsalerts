@@ -24,6 +24,8 @@ gem "pace"
 
 gem 'yajl-ruby' #prevents encoding exceptions 
 
+gem "nestful"
+
 group :development, :test do
   gem "sqlite3"        
   gem 'guard-rspec'               

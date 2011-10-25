@@ -5,6 +5,8 @@ require "tweetstream"
 require "resque"
 require "resque/tasks"    
 
+require "nestful"
+
 require File.dirname(__FILE__) + "/config/env"
 
 require File.dirname(__FILE__) + "/jobs/push_tweet"   
@@ -80,5 +82,36 @@ namespace :heroku do
     command = "heroku config:add"
     config.each {|key, val| command << " #{key}=#{val} " if val } 
     system command                                                
+  end
+end   
+
+def post_message(url, text="Empty Message")
+  msg = Hash.new{ |hash, key| hash[key] = Hash.new(&hash.default_proc) }
+
+  msg["text"]                         = text
+  msg["id_str"]                       = "#{Time.now.to_i}"
+  msg["created_at"]                   = Time.utc(*Time.new.to_a).to_s
+  msg["user"]["name"]                 = "Joe Netstar"
+  msg["user"]["location"]             = "Montvale, NJ"
+  msg["user"]["screen_name"]          = "netstar_user"
+  msg["user"]["followers_count"]      = "12345"
+  msg["user"]["profile_image_url"]    = "http://a1.twimg.com/profile_images/314644552/3218_1074491953775_1570471322_30186690_2935445_n_normal.jpg"
+
+  Nestful.post url, :format => :json, :params => {:message => msg}
+end
+
+namespace :messages do
+  namespace :prod do
+    desc "Create a message in production manually"
+    task :create, :text do |t, args|
+      post_message('http://nsalerts.herokuapp.com/messages.json', args[:text])
+    end  
+  end              
+   
+  namespace :dev do 
+    desc "Create a message in development manually"
+    task :create, :text do |t, args|
+      post_message('http://localhost:5000/messages.json', args[:text])
+    end    
   end
 end
