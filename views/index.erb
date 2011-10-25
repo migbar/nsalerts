@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+  <head>
+    <title>CollectTweet  - Live streaming</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="screen" title="no title" charset="utf-8">      
+    <link rel="stylesheet" type="text/css" href="css/bootstrap_override.css" media="screen" title="no title" charset="utf-8">      
+    <link rel="stylesheet" type="text/css" href="css/spinner.css" media="screen" title="no title" charset="utf-8">      
+    <link rel="stylesheet" type="text/css" href="css/app.css"  media="screen" title="no title" charset="utf-8">   
+    
+    <script src="http://js.pusherapp.com/1.8/pusher.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script> 
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>  
+    <script src="js/jquery.form.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery.manifest.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/linkify.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/application.js" type="text/javascript" charset="utf-8"></script>
+    
+    <script id="tweet-template" type="text/html">
+      <li id="{{TWEET_ID_STR}}" class="tweet"> 
+        <div class="wrapper">
+          <div class="left">     
+            <div>
+              <div class="avatar_wrapper">
+                <img width="48" height="48" class="avatar"  src="{{PROFILE_IMAGE}}"/>
+              </div>
+              <div class="user_name"><a href="http://twitter.com/#!/{{USER_NAME_HREF}}">{{USER_NAME}}</a></div>
+              </div>                                                                                                                              
+              <div class="followers">
+                <span class="followers_label">Followers:</span>
+                <span class="followers_count">{{FOLLOWERS_COUNT}}</span>
+              </div>
+          </div>
+          <div class="main_content">                                                                            
+            <div class="toolbar">
+              <span class="name_loc">
+                <span class="full_name"><a href="http://twitter.com/#!/{{USER_NAME_HREF}}">{{FULL_NAME}}</a></span> 
+                <span class="location">{{USER_LOCATION}}</span> 
+              </span>
+              <span class="star toolbar_button"><a href="#"><img width="24" height="24" src="images/star.png"></a></span> 
+              <span class="mail toolbar_button"><a href="#"><img width="32" height="24" src="images/mail.png"></a></span> 
+            </div>
+            <div class="message tweet_text">{{TEXT}}</div> 
+            <div class="footer">{{CREATED_AT}}</div>
+          </div>   
+        </div>   
+      </li>
+    </script>    
+    
+    <script id="bucket-template" type="text/html">
+      <li id="{{BUCKET_ID}}" class="bucket">
+        <div class="left">
+          <div class="bucket_count">{{BUCKET_COUNT}}</div>     
+        </div>
+        <h3><span class="bucket_name" >{{BUCKET_NAME}}</span></h3>
+        <div class="wrapper">
+          <div class="main_content">
+            <div class="bucket_words">{{BUCKET_WORDS}}
+            </div>     
+          </div>
+        </div>    
+        <div class="remove">X</div> 
+      </li>
+    </script>      
+    
+    <script id="spinner-template" type="text/html">
+      <div class="spinner">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+        <div class="bar4"></div>
+        <div class="bar5"></div>
+        <div class="bar6"></div>
+        <div class="bar7"></div>
+        <div class="bar8"></div>
+        <div class="bar9"></div>
+        <div class="bar10"></div>
+        <div class="bar11"></div>
+        <div class="bar12"></div>
+      </div>
+    </script> 
+    <script id="pusher_api"><%= pusher_api_key %></script>
+  </head>
+  
+  
+  <body>
+       
+    <div class="topbar">
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="#">CollectTweet</a>
+          <ul class="nav">
+            <li class="active"><a href="#">Live Stream</a></li>
+            <li><a href="#stats">Stats</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">     
+          <h1>Tweets about <small><%=ENV["TWITTER_KEYWORD"]%></small></h1>
+        </div>
+        <div class="row">
+          <div class="span15">
+            <h3>Incoming Tweets:</h3> 
+            <ul id="tweets" ></ul>
+          </div>
+          <div class="span8"> 
+            <h3>Add a new Tweet Bucket:</h3>  
+            <div id="add_bucket">   
+              <form class="form-stack" id="new_bucket_form" action="/buckets.json" method="post">  
+                  <fieldset>  
+                    <p>
+                      Name: 
+                      <br>
+                      <input id="bucket_name" type="text" name="name" />
+                    </p>
+                    <p>          
+                      Words: (enter terms separated by commas) <input id="bucket_words" type="text" name="words" />
+                    </p>
+                    <input type="hidden" name="action" value="add">
+                    <input class="btn primary small " type="submit" value="Create Bucket" /> 
+                  </fieldset>
+              </form>
+            </div>
+            <h3>Buckets:</h3>  
+            <ul id="buckets">
+              <% all_buckets.each do |bucket|%>    
+                <li id=<%= bucket["_id"] %> class="bucket">
+                  <div class="left">
+                    <div class="bucket_count"><%= bucket["tweets"] ? bucket["tweets"].count : 0 %></div>     
+                  </div>
+                  <h3><span class="bucket_name" ><%= bucket["name" ]%></span></h3>
+                  <div class="wrapper">
+                    <div class="main_content">
+                      <div class="bucket_words">
+                        <% bucket["words"].each do |w|%>
+                          <span class="word"><%= w %></span>
+                        <%end%>
+                      </div>     
+                    </div>
+                  </div>     
+                </li>
+              <%end%>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>&copy; Galar Systems 2011</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+  </body>
+
+</html>
+

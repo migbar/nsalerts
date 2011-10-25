@@ -1,0 +1,58 @@
+LOCAL DEVELOPMENT SETUP AND COMMANDS
+
+MAKE SURE THE ENV VARIABLE IS SET FOR RACK_ENV
+  export RACK_ENV=development
+           
+FIRE UP REDIS
+    in term1: cd ~/Documents/devel/code/redis-2.2.13/src
+              ./redis-server
+
+    in term2: cd ~/Documents/devel/code/redis-2.2.13/src
+              ./redis-cli
+    
+    
+FIRE UP MONGODB                                   
+    in term1: mongod --dbpath=/Users/miguelbarcos/data/db   
+    in term2: mongo 
+      (remember to use the right DB --> 'use collectweet')
+
+WATCH AND COMPILE COFFEESCRIPT                    
+    cd ~/Documents/devel/code/collectweet/public/js    
+    coffee -wc .
+    
+WATCH HEROKU PROCESS
+    cd ~/Documents/devel/code/collectweet 
+    watch heroku ps
+    
+EXPORT SETTINGS FROM /config/env.yml TO HEROKU    
+    bundle exec rake heroku:config
+    
+###############################
+dealing with heavy load    
+###############################    
+
+RIGHT NOW I have 5 queues.
+
+  1. persist
+      - save to RDBMS
+
+  2. mongo_persist    
+      - save to mongo
+
+  3. push_twt
+      - Pusher push tweets (TweetStream/rakefile to PushTweet)                        
+      - Pusher push stars (Sinatra to PushStar)
+
+  4. push_bkt  
+      - Pusher push bucket created (Sinatra to PushBucket)
+      - Pusher push bucket hit (MongoPersistTweet to PushBucket)
+      - Pusher push bucket recount (Buckets_EM to PushBucket)
+
+  5. buckets(EM)
+      - perform a bucket recount
+
+
+  Observations:
+  Queues that talk to Pusher get backed up under high load.
+  1 - I can use heroku scale to give those queues more workers
+  2 - I can stay with the same number of workers if i use async workers    

@@ -1,0 +1,4 @@
+config/env.yml
+log
+db/*.sql*
+.DS_Store
