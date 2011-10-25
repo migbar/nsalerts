@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
   <head>
-    <title>CollectTweet  - Live streaming</title>
+    <title>NetStar Messages - Live streaming</title>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="screen" title="no title" charset="utf-8">      
     <link rel="stylesheet" type="text/css" href="css/bootstrap_override.css" media="screen" title="no title" charset="utf-8">      
     <link rel="stylesheet" type="text/css" href="css/spinner.css" media="screen" title="no title" charset="utf-8">      
@@ -86,11 +86,11 @@
     <div class="topbar">
       <div class="fill">
         <div class="container">
-          <a class="brand" href="#">CollectTweet</a>
+          <a class="brand" href="#">NetStar Messages</a>
           <ul class="nav">
             <li class="active"><a href="#">Live Stream</a></li>
-            <li><a href="#stats">Stats</a></li>
-            <li><a href="#about">About</a></li>
+            <li><a href="#subscriptions">Subscriptions</a></li>
+            <li><a href="#search">Search</a></li>
           </ul>
         </div>
       </div>
@@ -100,15 +100,15 @@
 
       <div class="content">
         <div class="page-header">     
-          <h1>Tweets about <small><%=ENV["TWITTER_KEYWORD"]%></small></h1>
+          <h1>Messages about <small><%=ENV["TWITTER_KEYWORD"]%></small></h1>
         </div>
         <div class="row">
           <div class="span15">
-            <h3>Incoming Tweets:</h3> 
+            <h3>Incoming Messages:</h3> 
             <ul id="tweets" ></ul>
           </div>
           <div class="span8"> 
-            <h3>Add a new Tweet Bucket:</h3>  
+            <h3>Add a new Message Bucket:</h3>  
             <div id="add_bucket">   
               <form class="form-stack" id="new_bucket_form" action="/buckets.json" method="post">  
                   <fieldset>  
@@ -150,7 +150,7 @@
       </div>
 
       <footer>
-        <p>&copy; Galar Systems 2011</p>
+        <p>&copy; MBUSA 2011</p>
       </footer>
 
     </div> <!-- /container -->

@@ -78,7 +78,7 @@ namespace :heroku do
     puts "Reading config/env.yml and sending config vars to Heroku..."
     config = YAML.load_file('config/env.yml')['production'] rescue {}
     command = "heroku config:add"
-    config.each {|key, val| command << " #{key}=#{val} " if val }
-    system command
+    config.each {|key, val| command << " #{key}=#{val} " if val } 
+    system command                                                
   end
 end
