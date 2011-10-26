@@ -108,7 +108,7 @@
             <ul id="tweets" ></ul>
           </div>
           <div class="span8"> 
-            <h3>Add a new Message Bucket:</h3>  
+            <h3>Add a new Topic:</h3>  
             <div id="add_bucket">   
               <form class="form-stack" id="new_bucket_form" action="/buckets.json" method="post">  
                   <fieldset>  
@@ -125,7 +125,7 @@
                   </fieldset>
               </form>
             </div>
-            <h3>Buckets:</h3>  
+            <h3>Topics:</h3>  
             <ul id="buckets">
               <% all_buckets.each do |bucket|%>    
                 <li id=<%= bucket["_id"] %> class="bucket">
