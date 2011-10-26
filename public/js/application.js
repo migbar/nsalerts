@@ -82,8 +82,10 @@
         return $("#" + star.twid).addClass("starred");
       });
       bucketsChannel.bind("new_bucket", function(bucket) {
-        var bucket_element;
-        bucket_element = $("#bucket-template").html().replace("{{BUCKET_ID}}", bucket.id).replace("{{BUCKET_COUNT}}", $("#spinner-template").html()).replace("{{BUCKET_WORDS}}", bucket.words).replace("{{BUCKET_NAME}}", bucket.name);
+        var bucket_element, word_spans;
+        word_spans = app.create_word_spans(bucket.words);
+        console.log(word_spans);
+        bucket_element = $("#bucket-template").html().replace("{{BUCKET_ID}}", bucket.id).replace("{{BUCKET_COUNT}}", $("#spinner-template").html()).replace("{{BUCKET_NAME}}", bucket.name).replace("{{BUCKET_WORDS}}", word_spans);
         return $(bucket_element).hide().prependTo("#buckets").slideDown("fast");
       });
       bucketsChannel.bind("count_bucket", function(bucket_count) {
@@ -92,6 +94,15 @@
       return bucketsChannel.bind("recount_bucket", function(new_bucket_count) {
         return $("#" + new_bucket_count.id + " .bucket_count").html(app.commaFormat(new_bucket_count.count));
       });
+    },
+    create_word_spans: function(words) {
+      var str, word, _i, _len;
+      str = "";
+      for (_i = 0, _len = words.length; _i < _len; _i++) {
+        word = words[_i];
+        str += "<span class='word'>" + word + "</span>";
+      }
+      return str;
     }
   };
   $(function() {

@@ -64,14 +64,23 @@ app =
       $("#" + star.twid).addClass "starred"
 
     bucketsChannel.bind "new_bucket", (bucket) ->
-      bucket_element = $("#bucket-template").html().replace("{{BUCKET_ID}}", bucket.id).replace("{{BUCKET_COUNT}}", $("#spinner-template").html()).replace("{{BUCKET_WORDS}}", bucket.words).replace("{{BUCKET_NAME}}", bucket.name)
+      word_spans = (app.create_word_spans bucket.words) 
+      console.log word_spans
+      bucket_element = $("#bucket-template").html().replace("{{BUCKET_ID}}", bucket.id).replace("{{BUCKET_COUNT}}", $("#spinner-template").html()).replace("{{BUCKET_NAME}}", bucket.name).replace("{{BUCKET_WORDS}}", word_spans)
+      # bucket_element.replace("{{BUCKET_WORDS}}", "<span>word_spans</span")  
       $(bucket_element).hide().prependTo("#buckets").slideDown "fast"
 
     bucketsChannel.bind "count_bucket", (bucket_count) ->
       $("#" + bucket_count.id + " .bucket_count").html app.commaFormat(bucket_count.count)
 
     bucketsChannel.bind "recount_bucket", (new_bucket_count) ->
-      $("#" + new_bucket_count.id + " .bucket_count").html app.commaFormat(new_bucket_count.count)
-
+      $("#" + new_bucket_count.id + " .bucket_count").html app.commaFormat(new_bucket_count.count) 
+      
+  create_word_spans: (words) ->
+    str = ""
+    for word in words                           
+      str += "<span class='word'>#{word}</span>"
+    str  
+    
 $ ->
   app.initialize()
