@@ -8,7 +8,7 @@ require File.dirname(__FILE__) + "/jobs/push"
 require File.dirname(__FILE__) + "/jobs/bucket_recounter"          
 require File.dirname(__FILE__) + "/config/mongo_config" 
 
-# for POST messages.json
+# for POST messages.json - hello
 require File.dirname(__FILE__) + "/jobs/mongo_persist_tweet"
 require File.dirname(__FILE__) + "/jobs/push_tweet"
                           
