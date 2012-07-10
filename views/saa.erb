@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<head>
+  <title>Pusher Test</title>
+  <script src="http://js.pusher.com/1.11/pusher.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    // Enable pusher logging - don't include this in production
+    Pusher.log = function(message) {
+      if (window.console && window.console.log) window.console.log(message);
+    };
+
+    // Flash fallback logging - don't include this in production
+    WEB_SOCKET_DEBUG = true;
+
+    var pusher = new Pusher('8208255612716a80b298');
+    var channel = pusher.subscribe('test_channel');
+    channel.bind('my_event', function(data) {
+      alert(data);
+    });
+  </script>
+</head>
+<body>
+	<h1>Subscriptions and Alerts Pusher client</h1>
+	<p>
+		This page will display an alert with the contents of messages sent thru the subcriptions and alerts pusher channel. 
+		</p>
+		<p>
+		There is no need to refresh this page.
+	<p>
+</body>
+</html>
