@@ -20,6 +20,7 @@ STDOUT.sync = true
 #-- Stream search results from twitter --#
 
 task "tweetstream:stream" => "queue:environment" do
+  puts "before tweet stream client #{ENV["TWITTER_KEYWORD"]} #{ENV["TWITTER_USERNAME"]}, #{ENV["TWITTER_PASSWORD"]}"
   TweetStream::Client.new(ENV["TWITTER_USERNAME"], ENV["TWITTER_PASSWORD"]).on_error do |message|
     puts "*******************************************************"
     puts "********************* ERROR ***************************"
@@ -28,7 +29,7 @@ task "tweetstream:stream" => "queue:environment" do
     puts "*******************************************************"
     puts "*******************************************************"
   end.track(ENV["TWITTER_KEYWORD"]) do |tweet|
-    # puts "Received tweet: #{tweet[:text]}"
+    puts "Received tweet: #{tweet[:text]}"
     Resque.enqueue(MongoPersistTweet, tweet) 
     # Resque.enqueue(BucketMatcher, tweet[:id_str])
     # Resque.enqueue(PersistTweet, status)
@@ -52,7 +53,7 @@ namespace :queue do
 end
 
 namespace :resque do
-
+  puts "Resque is #{Resque}"
   task :setup => "queue:environment" do
     Resque.after_fork do |job|
       if job.payload_class == PersistTweet

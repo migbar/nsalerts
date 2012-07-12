@@ -16,7 +16,7 @@
     var channel = pusher.subscribe('test_channel');
     channel.bind('my_event', function(data) {
       alert(data);
-	 		$("#messages").append($('<li>'+data+'</li>');
+	 		$("#messages").append($('<li>'+data+'</li>'));
     });
   </script>
 </head>

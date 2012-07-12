@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 gem "thin"
-gem "rake"
+gem "rake", "0.9.2.2"
 gem "sinatra"
 gem "pusher"
                                                                  
@@ -34,9 +34,9 @@ end
 group :test do
   gem "rspec"   
   gem "capybara"   
-  gem "guard"
-  gem 'rb-fsevent'
-  gem 'growl_notify'
+  # gem "guard"
+  # gem 'rb-fsevent'
+  # gem 'growl_notify'
 end
             
 group :production do
