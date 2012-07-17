@@ -78,8 +78,21 @@
       return $('#bucket_words').manifest();
     },
     setupPusher: function() {
-      var bucketsChannel, pusher, tweetsChannel;
-      pusher = new Pusher($('#pusher_api').html());
+      var apiKey, bucketsChannel, pusher, result, tweetsChannel;
+      apiKey = $('#pusher_api').html();
+      pusher = new Pusher(apiKey);
+      result = "";
+      result += "options: " + pusher['options'] + "\n";
+      result += "path: " + pusher['path'] + "\n";
+      result += "key: " + pusher['key'] + "\n";
+      result += "channels: " + pusher['channels'] + "\n";
+      result += "global_channel: " + pusher['global_channel'] + "\n";
+      result += "secure: " + pusher['secure'] + "\n";
+      result += "connected: " + pusher['connected'] + "\n";
+      result += "retry_counter: " + pusher['retry_counter'] + "\n";
+      result += "encrypted: " + pusher['encrypted'] + "\n";
+      result += "connection " + pusher.connection;
+      alert(result);
       pusher.connection.bind("failed", function() {
         var flashVersionInfo;
         flashVersionInfo = swfobject.getFlashPlayerVersion();
