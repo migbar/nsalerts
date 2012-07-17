@@ -93,11 +93,6 @@
       result += "encrypted: " + pusher['encrypted'] + "\n";
       result += "connection " + pusher.connection;
       alert(result);
-      pusher.connection.bind("failed", function() {
-        var flashVersionInfo;
-        flashVersionInfo = swfobject.getFlashPlayerVersion();
-        return alert("Falling back to FLASH " + flashVersionInfo.major + "." + flashVersionInfo.minor + "." + flashVersionInfo.release);
-      });
       tweetsChannel = pusher.subscribe("tweets");
       bucketsChannel = pusher.subscribe("buckets");
       tweetsChannel.bind("tweet", function(tweet) {

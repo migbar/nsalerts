@@ -71,9 +71,9 @@ app =
     result += "connection #{pusher.connection}"
     alert result
     
-    pusher.connection.bind "failed", ->
-      flashVersionInfo = swfobject.getFlashPlayerVersion()
-      alert "Falling back to FLASH #{flashVersionInfo.major}.#{flashVersionInfo.minor}.#{flashVersionInfo.release}"
+    # pusher.connection.bind "failed", ->
+    #   flashVersionInfo = swfobject.getFlashPlayerVersion()
+    #   alert "Falling back to FLASH #{flashVersionInfo.major}.#{flashVersionInfo.minor}.#{flashVersionInfo.release}"
     
     tweetsChannel = pusher.subscribe("tweets")
     bucketsChannel = pusher.subscribe("buckets")  
