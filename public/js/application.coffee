@@ -1,14 +1,19 @@
 app = 
   initialize: ->
+    app.consoleHack()
     app.setupStars()
     app.setupBucketForm()
     app.setupManifest()
     app.setupPusher()
-    app.addCommas()  
-    
+    app.addCommas()
+  
+  consoleHack: ->
+    if typeof console is "undefined"
+      window.console = log: ->
+
   setupStars: ->
     console.log "setting up STARS !!!!!!" 
-    $(".star").live 'click', (e) ->                   
+    $(".star").live 'click', (e) ->
       e.preventDefault()
       app.notifyStar this
       
