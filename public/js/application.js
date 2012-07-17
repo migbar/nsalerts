@@ -80,6 +80,11 @@
     setupPusher: function() {
       var bucketsChannel, pusher, tweetsChannel;
       pusher = new Pusher($('#pusher_api').html());
+      pusher.connection.bind("failed", function() {
+        var flashVersionInfo;
+        flashVersionInfo = swfobject.getFlashPlayerVersion();
+        return alert("Falling back to FLASH " + flashVersionInfo.major + "." + flashVersionInfo.minor + "." + flashVersionInfo.release);
+      });
       tweetsChannel = pusher.subscribe("tweets");
       bucketsChannel = pusher.subscribe("buckets");
       tweetsChannel.bind("tweet", function(tweet) {

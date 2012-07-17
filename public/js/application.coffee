@@ -57,6 +57,11 @@ app =
     
   setupPusher: ->  
     pusher = new Pusher($('#pusher_api').html())
+    
+    pusher.connection.bind "failed", ->
+      flashVersionInfo = swfobject.getFlashPlayerVersion()
+      alert "Falling back to FLASH #{flashVersionInfo.major}.#{flashVersionInfo.minor}.#{flashVersionInfo.release}"
+    
     tweetsChannel = pusher.subscribe("tweets")
     bucketsChannel = pusher.subscribe("buckets")  
     
