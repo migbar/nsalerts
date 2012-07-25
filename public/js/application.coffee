@@ -75,7 +75,7 @@ app =
     bucketsChannel = pusher.subscribe("buckets")
 
     tweetsChannel.bind "tweet", (tweet) ->
-      alert tweet.text
+      # alert tweet.text
       linkifiedText = $("<p>" + tweet.text + "</p>").linkify().html()
       template = $("#tweet-template").html().replace("{{TWEET_ID_STR}}", tweet.id_str).replace("{{PROFILE_IMAGE}}", tweet.user.profile_image_url).replace("{{TEXT}}", linkifiedText).replace("{{CREATED_AT}}", tweet.created_at).replace("{{USER_NAME_HREF}}", tweet.user.screen_name).replace("{{USER_NAME}}", tweet.user.screen_name).replace("{{USER_NAME_HREF}}", tweet.user.screen_name).replace("{{FULL_NAME}}", tweet.user.name).replace("{{USER_LOCATION}}", tweet.user.location).replace("{{FOLLOWERS_COUNT}}", tweet.user.followers_count)
       $(template).hide().prependTo("#tweets").slideDown "fast"
