@@ -69,7 +69,7 @@ app =
     result += "retry_counter: #{pusher['retry_counter']}\n"
     result += "encrypted: #{pusher['encrypted']}\n"
     result += "connection #{pusher.connection}"
-    alert result
+    # alert result
 
     tweetsChannel = pusher.subscribe("tweets")
     bucketsChannel = pusher.subscribe("buckets")

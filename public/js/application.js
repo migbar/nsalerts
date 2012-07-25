@@ -92,7 +92,6 @@
       result += "retry_counter: " + pusher['retry_counter'] + "\n";
       result += "encrypted: " + pusher['encrypted'] + "\n";
       result += "connection " + pusher.connection;
-      alert(result);
       tweetsChannel = pusher.subscribe("tweets");
       bucketsChannel = pusher.subscribe("buckets");
       tweetsChannel.bind("tweet", function(tweet) {
